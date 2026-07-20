@@ -3,7 +3,7 @@
 # The app fetches this at boot alongside /list/.
 set -eu
 
-: "${PHOTO_DWELL_SECONDS:=45}"
+: "${PHOTO_DWELL_SECONDS:=20}"
 : "${REFRESH_INTERVAL_MINUTES:=15}"
 
 mkdir -p /var/cache/kiosk

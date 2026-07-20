@@ -22,7 +22,7 @@ Drop JPEGs and MP4s in `./photos/`, then open `http://localhost:8080/` in a brow
 
 ## Docker Compose (recommended: pair with the scraper)
 
-The typical Pi deployment runs the scraper and the kiosk side-by-side, sharing a folder:
+Run the scraper and the kiosk side-by-side, sharing a folder:
 
 ```yaml
 services:
@@ -34,36 +34,34 @@ services:
       STORAGE_BUFFER_PERCENT: '15'
       AUTOPRUNE_ON_LOW_STORAGE: 'true'
     volumes:
-      - /home/pi/photos:/photos
+      - ./photos:/photos
     restart: unless-stopped
 
   kiosk:
     image: ghcr.io/bitwise-forge/icloud-album-kiosk:latest
     environment:
-      PHOTO_DWELL_SECONDS: '45'
+      PHOTO_DWELL_SECONDS: '20'
     volumes:
-      - /home/pi/photos:/usr/share/nginx/html/photos:ro
+      - ./photos:/usr/share/nginx/html/photos:ro
     ports:
       - '127.0.0.1:80:80'
     restart: unless-stopped
 ```
 
-Then launch Chromium in kiosk mode on the Pi:
+Then launch Chromium in kiosk mode against the running container:
 
 ```bash
-chromium-browser --kiosk http://localhost/ \
+chromium --kiosk http://localhost/ \
   --autoplay-policy=no-user-gesture-required \
   --noerrdialogs --disable-infobars --disable-session-crashed-bubble \
   --check-for-update-interval=31536000
 ```
 
-No hardware-decode flags are needed. Stock Chromium on current Raspberry Pi OS hardware-decodes H.264 via V4L2-M2M on `/dev/video10` out of the box.
-
 ## Environment variables
 
 | Variable                   | Default | Description                                                                                                                            |
 | -------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `PHOTO_DWELL_SECONDS`      | `45`    | Seconds each photo displays before the next transition. Videos ignore this — they always play to their natural end.                    |
+| `PHOTO_DWELL_SECONDS`      | `20`    | Seconds each photo displays before the next transition. Videos ignore this — they always play to their natural end.                    |
 | `REFRESH_INTERVAL_MINUTES` | `15`    | How often to poll `/list/` for manifest changes. When the folder content changes, the current playlist is reshuffled from the new set. |
 
 Env vars are read at container start and written into `/config.json`, which the app fetches at boot. Restart the container to pick up new values.

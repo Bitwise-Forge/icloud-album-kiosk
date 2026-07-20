@@ -19,7 +19,7 @@ COPY docker-entrypoint.d/10-write-config.sh /docker-entrypoint.d/10-write-config
 RUN chmod +x /docker-entrypoint.d/10-write-config.sh
 
 # Defaults — override at container run via `-e PHOTO_DWELL_SECONDS=30`.
-ENV PHOTO_DWELL_SECONDS=45
+ENV PHOTO_DWELL_SECONDS=20
 ENV REFRESH_INTERVAL_MINUTES=15
 
 EXPOSE 80

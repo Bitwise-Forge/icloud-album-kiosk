@@ -1,5 +1,5 @@
 export const DEFAULTS = Object.freeze({
-  photoDwellSeconds: 45,
+  photoDwellSeconds: 20,
   refreshIntervalMinutes: 15,
   bootMinimumMs: 5000,
   crossfadeMs: 800,

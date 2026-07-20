@@ -48,7 +48,7 @@ describe('boot', () => {
     await boot({ fetchImpl, createSlideshowImpl: factory });
 
     const args = factory.mock.calls[0][0];
-    expect(args.config.photoDwellSeconds).toBe(45);
+    expect(args.config.photoDwellSeconds).toBe(20);
     expect(args.config.refreshIntervalMinutes).toBe(15);
   });
 
@@ -59,7 +59,7 @@ describe('boot', () => {
     await boot({ fetchImpl, createSlideshowImpl: factory });
 
     const args = factory.mock.calls[0][0];
-    expect(args.config.photoDwellSeconds).toBe(45);
+    expect(args.config.photoDwellSeconds).toBe(20);
   });
 
   it('appends both layers to the stage element', async () => {

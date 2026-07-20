@@ -123,7 +123,7 @@ docker buildx rm iak-multi
 
 | Var                        | Default | Purpose                                                                                                |
 | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
-| `PHOTO_DWELL_SECONDS`      | `45`    | Seconds each photo is displayed before advancing. Videos ignore this — they play to their natural end. |
+| `PHOTO_DWELL_SECONDS`      | `20`    | Seconds each photo is displayed before advancing. Videos ignore this — they play to their natural end. |
 | `REFRESH_INTERVAL_MINUTES` | `15`    | How often to poll `/list/` for manifest changes.                                                       |
 
 Env vars are read at container start by `docker-entrypoint.d/10-write-config.sh` and written into `/config.json`, which the app fetches at boot alongside `/list/`.
