@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      dx-tooling:
+        patterns:
+          - 'oxlint'
+          - 'oxfmt'
+          - 'cspell'
+          - 'vitest'
+          - '@vitest/*'
+          - 'happy-dom'
+          - 'husky'
+          - 'lint-staged'
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

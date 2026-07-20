@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "avoid",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "ignorePatterns": [
+    ".github/**/*.yml",
+    "pnpm-lock.yaml",
+    ".pnpm-store",
+    "photos/**",
+    "tests/photos/**",
+    "coverage/**",
+    "src/assets/**"
+  ],
+  "printWidth": 100,
+  "quoteProps": "as-needed",
+  "semi": true,
+  "singleQuote": true,
+  "sortImports": {
+    "groups": [
+      ["type-external", "type-builtin", "external", "builtin"],
+      { "newlinesBetween": true },
+      ["type-internal", "internal"],
+      ["type-parent", "type-sibling", "type-index", "parent", "sibling", "index"],
+      { "newlinesBetween": true },
+      "side_effect",
+      "side_effect_style",
+      "unknown"
+    ],
+    "newlinesBetween": false
+  },
+  "sortPackageJson": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "useTabs": false
+}

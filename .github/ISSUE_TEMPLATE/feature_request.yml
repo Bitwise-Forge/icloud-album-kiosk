@@ -1,0 +1,30 @@
+name: Feature request
+description: Suggest an enhancement or new behavior.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, please check the scope section in [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md#scope). This tool has a narrow scope by design.
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What are you trying to accomplish? What's the underlying goal, not the specific implementation you have in mind?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: The specific change you'd like to see.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches did you consider? Why is this one preferred?

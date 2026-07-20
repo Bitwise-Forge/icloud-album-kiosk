@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.mp4 binary
+*.m4v binary
+*.svg text eol=lf
+pnpm-lock.yaml linguist-generated=true -diff

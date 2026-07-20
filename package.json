@@ -1,0 +1,46 @@
+{
+  "name": "icloud-album-kiosk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal HTML/CSS/JS slideshow packaged as a Docker container image for Raspberry Pi digital picture frames. Consumes photos and videos from a local folder written by icloud-shared-album-sync and displays them full-screen via nginx + Chromium in kiosk mode.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bitwise-Forge/icloud-album-kiosk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Bitwise-Forge/icloud-album-kiosk/issues"
+  },
+  "homepage": "https://github.com/Bitwise-Forge/icloud-album-kiosk#readme",
+  "engines": {
+    "node": ">=26",
+    "pnpm": ">=11"
+  },
+  "packageManager": "pnpm@11.15.1",
+  "scripts": {
+    "dev": "docker compose -f docker-compose.dev.yml up --build",
+    "dev:down": "docker compose -f docker-compose.dev.yml down",
+    "format": "oxfmt --config .oxfmtrc.json --check .",
+    "format:fix": "oxfmt --config .oxfmtrc.json .",
+    "lint": "oxlint --config .oxlintrc.json --quiet",
+    "lint:fix": "oxlint --config .oxlintrc.json --fix",
+    "spell": "cspell --no-must-find-files \"**/*.{js,md,html,css,json,yml,yaml}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:seed": "bash scripts/seed-test-photos.sh",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "node .husky/install.mjs"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.10",
+    "cspell": "^10.0.1",
+    "happy-dom": "^20.10.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "oxfmt": "^0.53.0",
+    "oxlint": "^1.73.0",
+    "vitest": "^4.1.10"
+  }
+}

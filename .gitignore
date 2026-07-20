@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# coverage / test artifacts
+coverage/
+.vitest-cache/
+
+# editor / OS
+.DS_Store
+*.swp
+
+# logs / debug
+npm-debug.log*
+pnpm-debug.log*
+
+# local dev photo mounts — never commit imagery
+photos/
+src/photos/*
+!src/photos/.gitkeep
+
+# test photo fixtures — hydrated locally by scripts/seed-test-photos.sh
+tests/photos/*
+!tests/photos/.gitkeep
+!tests/photos/README.md
+
+# local env overrides
+.env
+.env.local

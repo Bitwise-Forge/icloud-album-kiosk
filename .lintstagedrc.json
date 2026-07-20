@@ -1,0 +1,4 @@
+{
+  "*.{js,mjs,cjs}": ["oxlint --config .oxlintrc.json --fix", "oxfmt --config .oxfmtrc.json"],
+  "!(pnpm-lock).{json,css,html,md,yaml,yml,toml}": ["oxfmt --config .oxfmtrc.json"]
+}

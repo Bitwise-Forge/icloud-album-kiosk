@@ -1,0 +1,18 @@
+# Local dev harness. Runs the same nginx:alpine image with bind mounts so
+# edits to src/, nginx.conf, and the entrypoint are picked up on refresh
+# without rebuilding the image. Drop test photos/videos in ./photos/ and hit
+# http://localhost:8080/.
+services:
+  kiosk:
+    image: nginx:alpine
+    ports:
+      - '127.0.0.1:8080:80'
+    environment:
+      PHOTO_DWELL_SECONDS: '10'
+      REFRESH_INTERVAL_MINUTES: '15'
+    volumes:
+      - ./src:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker-entrypoint.d/10-write-config.sh:/docker-entrypoint.d/10-write-config.sh:ro
+      - ./tests/photos:/usr/share/nginx/html/photos:ro
+    restart: unless-stopped

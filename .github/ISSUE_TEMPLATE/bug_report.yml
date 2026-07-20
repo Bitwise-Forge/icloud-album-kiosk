@@ -1,0 +1,57 @@
+name: Bug report
+description: Something in the slideshow isn't working right.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. If this is a security issue, please use the private reporting channel — see [SECURITY.md](../blob/main/SECURITY.md).
+
+  - type: input
+    id: version
+    attributes:
+      label: Image tag / commit
+      description: e.g. `ghcr.io/bitwise-forge/icloud-album-kiosk:v0.1.0` or a commit SHA
+      placeholder: 'v0.1.0'
+    validations:
+      required: true
+
+  - type: input
+    id: host
+    attributes:
+      label: Host / device
+      description: e.g. Raspberry Pi 4B / Raspberry Pi OS Trixie, or your dev machine
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you observed vs. what you expected. Screenshots or short screen recordings help.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Started container with PHOTO_DWELL_SECONDS=30
+        2. Loaded a folder with one .mp4 and 50 .jpg
+        3. On the 12th photo, the frame went black and stayed black
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Container logs and browser console
+      description: Relevant `docker logs` output, plus anything from Chromium DevTools console if reachable.
+      render: shell
+
+  - type: textarea
+    id: manifest
+    attributes:
+      label: Asset shape
+      description: How many photos vs videos? Any unusual filenames or sizes?

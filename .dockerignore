@@ -1,0 +1,15 @@
+# Everything by default, then allowlist what the image needs.
+# Keeps node_modules, tests, DX config, .git, docs out of the build context.
+*
+
+# App source — the only runtime payload
+!src/
+
+# nginx server config
+!nginx.conf
+
+# Entrypoint scripts (envsubst → /config.json at container start)
+!docker-entrypoint.d/
+
+# The Dockerfile itself (docker build reads it via -f but keep it explicit)
+!Dockerfile
