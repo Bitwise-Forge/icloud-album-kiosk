@@ -2,7 +2,7 @@
 FROM nginx:alpine
 
 LABEL org.opencontainers.image.title="icloud-album-kiosk"
-LABEL org.opencontainers.image.description="Minimal HTML/CSS/JS slideshow for Raspberry Pi digital picture frames. Consumes photos + videos from a local folder written by icloud-shared-album-sync."
+LABEL org.opencontainers.image.description="A folder of photos and videos, shown as a full-screen slideshow."
 LABEL org.opencontainers.image.source="https://github.com/Bitwise-Forge/icloud-album-kiosk"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.vendor="Bitwise Forge"

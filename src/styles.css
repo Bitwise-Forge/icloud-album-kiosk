@@ -1,5 +1,7 @@
 :root {
   --bg: #000;
+  --placeholder-bg: #fff;
+  --placeholder-fg: #333;
   --fade-duration: 800ms;
   --placeholder-fade-duration: 600ms;
 }
@@ -65,8 +67,9 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  background: var(--bg);
+  gap: 1rem;
+  background: var(--placeholder-bg);
+  color: var(--placeholder-fg);
   z-index: 10;
   opacity: 1;
   transition: opacity var(--placeholder-fade-duration) ease-out;
@@ -78,13 +81,13 @@ body {
 }
 
 #placeholder img {
-  width: min(30vw, 240px);
+  width: min(70vw, 720px);
   height: auto;
 }
 
 #placeholder p {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   letter-spacing: 0.05em;
   opacity: 0.7;
 }

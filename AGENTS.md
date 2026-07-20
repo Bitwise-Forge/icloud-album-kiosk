@@ -38,7 +38,7 @@ A minimal HTML/CSS/JS slideshow packaged as a Docker container image for Raspber
 ├── .oxfmtrc.json                   # oxfmt config
 ├── cspell.json                     # Spell check config
 ├── vitest.config.js                # 100% coverage gate on src/lib/**
-├── package.json                    # pnpm 10.33.0, Node 25.9.0, DX deps only
+├── package.json                    # Node + pnpm pinned via .nvmrc + packageManager; DX deps only
 ├── .husky/                         # Git hooks (pre-commit → lint-staged)
 ├── .github/
 │   ├── workflows/                  # ci.yml + release.yml
@@ -85,7 +85,7 @@ A minimal HTML/CSS/JS slideshow packaged as a Docker container image for Raspber
 
 ## Development setup
 
-Install [Node](https://nodejs.org/) 25.9.0 or newer and [pnpm](https://pnpm.io/) 10.33.0 or newer.
+Install [Node](https://nodejs.org/) at the version pinned in `.nvmrc` and [pnpm](https://pnpm.io/) at the version pinned via `packageManager` in `package.json`.
 
 ```bash
 pnpm install       # installs dev deps, arms the husky pre-commit hook
@@ -93,7 +93,7 @@ pnpm test          # run tests
 pnpm dev           # local docker-compose harness at http://localhost:8080/
 ```
 
-`pnpm dev` bind-mounts `src/`, `nginx.conf`, and `./photos/` into a stock `nginx:alpine` container. Edits to source files are visible on refresh — no rebuild required. Drop test JPEGs / MP4s in `./photos/` (gitignored).
+`pnpm dev` bind-mounts `src/`, `nginx.conf`, and `tests/photos/` into a stock `nginx:alpine` container. Edits to source files are visible on refresh — no rebuild required. Hydrate `tests/photos/` via `pnpm test:seed` (5 sample JPEGs from picsum.photos, gitignored), or drop your own `.jpg` / `.mp4` files in there.
 
 ## Common commands
 

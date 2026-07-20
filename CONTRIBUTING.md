@@ -28,7 +28,7 @@ Out of scope:
 
 ## Development setup
 
-Install [Node](https://nodejs.org/) 25.9.0 or newer and [pnpm](https://pnpm.io/) 10.33.0 or newer, then:
+Install [Node](https://nodejs.org/) (version pinned in `.nvmrc`) and [pnpm](https://pnpm.io/) (pinned via `packageManager` in `package.json`), then:
 
 ```bash
 git clone https://github.com/Bitwise-Forge/icloud-album-kiosk

@@ -5,9 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](./CODE_OF_CONDUCT.md)
 
-Full-screen photo + video slideshow for a Raspberry Pi digital picture frame. A tiny Docker image on top of nginx that serves a folder of JPEGs and MP4s as a crossfading slideshow, ready to point Chromium `--kiosk` at.
+A folder of photos and videos, shown as a full-screen slideshow — a tiny Docker image on top of nginx, ready to point Chromium `--kiosk` at.
 
-Pairs with [icloud-shared-album-sync](https://github.com/Bitwise-Forge/icloud-shared-album-sync) to build a self-contained picture-frame appliance backed by an iCloud Shared Album, but works with any folder of photos and videos — nothing about this image is iCloud-specific past the choice of file formats it accepts.
+Pairs cleanly with [icloud-shared-album-sync](https://github.com/Bitwise-Forge/icloud-shared-album-sync) to build a self-contained digital picture frame backed by an iCloud Shared Album, but nothing about this image is iCloud-specific — any process that lands `.jpg` / `.mp4` files in the mounted folder works.
 
 ## Quickstart
 
@@ -106,16 +106,19 @@ For multi-arch (both `linux/amd64` and `linux/arm64`), see [CONTRIBUTING.md](./C
 
 ## Development
 
-Install [Node](https://nodejs.org/) 25.9.0+ and [pnpm](https://pnpm.io/) 10.33.0+, then:
+Install [Node](https://nodejs.org/) (version pinned in `.nvmrc`) and [pnpm](https://pnpm.io/) (pinned via `packageManager` in `package.json`), then:
 
 ```bash
 pnpm install
 pnpm test            # vitest suite
-pnpm test:coverage   # 100% coverage gate on src/lib/
+pnpm test:coverage   # 100% coverage gate on src/
+pnpm test:seed       # hydrate tests/photos/ with 5 sample JPEGs (gitignored)
 pnpm dev             # local docker-compose harness at http://localhost:8080/
 ```
 
-Drop test JPEGs / MP4s in `./photos/` for `pnpm dev` to serve. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full contributor guide.
+`pnpm dev` bind-mounts `tests/photos/` into the container. Hydrate it via `pnpm test:seed` for random JPEGs from [picsum.photos](https://picsum.photos), or drop your own `.jpg` / `.jpeg` / `.mp4` / `.m4v` files there. Custom counts and dimensions: `pnpm test:seed 10` or `WIDTH=4096 HEIGHT=3072 pnpm test:seed 3`.
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full contributor guide.
 
 ## Contributing
 

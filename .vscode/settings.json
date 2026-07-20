@@ -1,8 +1,16 @@
 {
-  "oxc.fmt.configPath": ".oxfmtrc.json",
   "editor.codeActionsOnSave": {
-    "source.fixAll": "never"
+    "source.fixAll": "never",
+    "source.fixAll.oxc": "always"
   },
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "eslint.enable": false,
+  "prettier.enable": false,
+  "oxc.configPath": ".oxlintrc.json",
+  "oxc.enable.oxfmt": true,
+  "oxc.enable.oxlint": true,
+  "oxc.fixKind": "safe_fix_or_suggestion",
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "oxc.lint.run": "onType"
 }
