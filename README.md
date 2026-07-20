@@ -133,3 +133,7 @@ MIT — see [LICENSE](./LICENSE).
 This is a community-supported open source project. Issues and pull requests are welcome; there is no SLA and no obligation to fix. If you find a bug, open an issue with your image tag, host, and any relevant `docker logs` output plus Chromium DevTools console messages if you can capture them.
 
 Built and maintained by [Bitwise Forge](https://bitwiseforge.com).
+
+---
+
+<sub>iCloud and Apple are trademarks of Apple Inc., registered in the U.S. and other countries. This project is not affiliated with, endorsed by, or sponsored by Apple Inc.</sub>
