@@ -50,7 +50,6 @@ A minimal HTML/CSS/JS slideshow packaged as a Docker container image for Raspber
 ├── CODE_OF_CONDUCT.md              # Contributor Covenant 2.1
 ├── SECURITY.md
 ├── CHANGELOG.md                    # Keep a Changelog
-├── LAUNCH_CHECKLIST.md             # Actions deferred until repo goes public
 └── LICENSE                         # MIT
 ```
 
@@ -171,6 +170,5 @@ If a task is ambiguously in or out of scope, open a draft issue and ask before w
 - **Change log:** [CHANGELOG.md](./CHANGELOG.md)
 - **Security reporting:** [SECURITY.md](./SECURITY.md)
 - **Community expectations:** [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
-- **Public-flip checklist:** [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md)
 
 If `AGENTS.md` conflicts with any linked doc above, the linked doc wins.
