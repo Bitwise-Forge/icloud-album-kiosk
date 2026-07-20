@@ -4,12 +4,9 @@ Actions deferred until the repo is flipped to public. This file exists so nothin
 
 ## Before flipping to public
 
-- [ ] Drop the final `bitwise-forge-logo.svg` into `src/assets/` (rename the `.PLACEHOLDER` file)
 - [ ] Verify the slideshow end-to-end on a real Raspberry Pi 4B against `ghcr.io/bitwise-forge/icloud-shared-album-sync`
 - [ ] Publish `v0.1.0` from a private release run (release workflow works on private repos; the resulting GHCR image will be private too)
 - [ ] Confirm the multi-arch image manifest inspects clean on both `linux/amd64` and `linux/arm64`
-- [ ] Verify `PHOTO_DWELL_SECONDS` and `REFRESH_INTERVAL_MINUTES` env-var overrides land in `/config.json`
-- [ ] `pnpm test:coverage` at 100% on `src/lib/`
 - [ ] README quickstart works copy-paste against a public image (once flipped)
 - [ ] BF-vault strategic README updated to "Status: Shipped"
 
