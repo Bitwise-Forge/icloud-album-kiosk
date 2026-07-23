@@ -12,6 +12,10 @@ export const defaultTimers = {
 
 export const defaultNow = () => performance.now();
 
+// Short enough that the loop reacts quickly when content appears in a
+// previously-empty album, without waiting for the next refresh tick.
+const EMPTY_PLAYLIST_TICK_MS = 1000;
+
 export const createSlideshow = ({
   config,
   manifestUrl = '/list/',
@@ -33,11 +37,15 @@ export const createSlideshow = ({
     refreshHandle: null,
   };
 
+  // Three-state return: null on fetch/parse failure, [] for a successfully-
+  // fetched empty album, or a populated array. Callers must distinguish
+  // the first two — a transient error is a reason to keep waiting, an
+  // empty album is a real state that must be surfaced.
   const loadManifest = async () => {
     try {
       return await fetchManifest(manifestUrl, { fetchImpl });
     } catch {
-      return [];
+      return null;
     }
   };
 
@@ -45,11 +53,17 @@ export const createSlideshow = ({
     state.refreshHandle = timers.setInterval(
       async () => {
         const fresh = await loadManifest();
-        if (fresh.length === 0) return;
+        if (fresh === null) return;
         if (!manifestsDiffer(state.assets, fresh)) return;
         state.assets = fresh;
         state.playlist = shuffle(fresh);
         state.cursor = 0;
+        if (fresh.length === 0) {
+          for (const layer of layers) layer.fadeOut();
+          placeholder.show();
+        } else {
+          placeholder.hide();
+        }
       },
       config.refreshIntervalMinutes * 60 * 1000,
     );
@@ -64,6 +78,13 @@ export const createSlideshow = ({
   };
 
   const advance = async () => {
+    if (state.playlist.length === 0) {
+      // The refresh interval is the only path that surfaces new content;
+      // yield to it rather than spinning here.
+      await timers.sleep(EMPTY_PLAYLIST_TICK_MS);
+      return;
+    }
+
     const next = state.playlist[state.cursor];
     const hiddenIndex = 1 - state.activeLayer;
     const hiddenLayer = layers[hiddenIndex];
@@ -103,11 +124,14 @@ export const createSlideshow = ({
     state.running = true;
     const bootStart = now();
 
+    // A successful-but-empty response is a valid terminal answer here.
+    // Only null (fetch/parse failure) is a reason to keep retrying.
     let assets = await loadManifest();
-    while (assets.length === 0 && state.running) {
+    while (assets === null && state.running) {
       await timers.sleep(config.refreshIntervalMinutes * 60 * 1000);
       assets = await loadManifest();
     }
+    if (!state.running) return;
 
     state.assets = assets;
     state.playlist = shuffle(assets);
@@ -117,7 +141,8 @@ export const createSlideshow = ({
     const remaining = config.bootMinimumMs - elapsed;
     if (remaining > 0) await timers.sleep(remaining);
 
-    placeholder.hide();
+    // Placeholder starts visible; scheduleRefresh hides it once content arrives.
+    if (state.assets.length > 0) placeholder.hide();
     scheduleRefresh();
 
     while (state.running) {

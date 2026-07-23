@@ -15,7 +15,7 @@ const makeLayer = () => ({
   fadeOut: vi.fn(),
 });
 
-const makePlaceholder = () => ({ hide: vi.fn() });
+const makePlaceholder = () => ({ hide: vi.fn(), show: vi.fn() });
 
 const makeTimers = () => {
   const intervals = new Map();
@@ -108,33 +108,9 @@ describe('createSlideshow', () => {
     expect(timers.clearInterval).toHaveBeenCalled();
   });
 
-  it('waits for a non-empty manifest before starting the slideshow', async () => {
-    const timers = makeTimers();
-    const fetchImpl = vi
-      .fn()
-      .mockResolvedValueOnce(manifestResponse([]))
-      .mockResolvedValue(manifestResponse([{ name: 'a.jpg', type: 'file' }]));
-    const gate = makeGate(1);
-    const preloadPhotoImpl = gatedPreload(gate, basicPhoto());
-
-    const slideshow = createSlideshow({
-      config: CONFIG,
-      layers: [makeLayer(), makeLayer()],
-      placeholder: makePlaceholder(),
-      fetchImpl,
-      timers,
-      now: () => 0,
-      preloadPhotoImpl,
-      preloadVideoImpl: vi.fn(basicVideo()),
-      playToEndImpl: basicPlayToEnd(),
-    });
-
-    await runFor({ slideshow, gate });
-
-    expect(fetchImpl.mock.calls.length).toBeGreaterThanOrEqual(2);
-  });
-
-  it('handles fetch failure by treating it as an empty manifest', async () => {
+  it('retries the boot manifest fetch until it succeeds', async () => {
+    // Only a failed fetch is a reason to keep waiting on boot. An empty-but-
+    // successful response is a valid terminal state and is handled elsewhere.
     const timers = makeTimers();
     const fetchImpl = vi
       .fn()
@@ -158,6 +134,62 @@ describe('createSlideshow', () => {
     await runFor({ slideshow, gate });
 
     expect(fetchImpl.mock.calls.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('boots into an empty album without spinning: placeholder stays up, no preloads', async () => {
+    const layers = [makeLayer(), makeLayer()];
+    const placeholder = makePlaceholder();
+    const timers = makeTimers();
+    const fetchImpl = vi.fn().mockResolvedValue(manifestResponse([]));
+    const preloadPhotoImpl = vi.fn(basicPhoto());
+
+    const slideshow = createSlideshow({
+      config: CONFIG,
+      layers,
+      placeholder,
+      fetchImpl,
+      timers,
+      now: () => 0,
+      preloadPhotoImpl,
+      preloadVideoImpl: vi.fn(basicVideo()),
+      playToEndImpl: basicPlayToEnd(),
+    });
+
+    const startPromise = slideshow.start();
+    // Let the loop take a few empty-tick passes before we stop it.
+    await new Promise(r => setTimeout(r, 10));
+    slideshow.stop();
+    await startPromise;
+
+    expect(placeholder.hide).not.toHaveBeenCalled();
+    expect(preloadPhotoImpl).not.toHaveBeenCalled();
+    expect(slideshow._state.assets).toEqual([]);
+    expect(slideshow._state.playlist).toEqual([]);
+  });
+
+  it('bails cleanly when stop() is called during the retry-on-error wait', async () => {
+    const timers = makeTimers();
+    const fetchImpl = vi.fn().mockRejectedValue(new Error('down'));
+    const preloadPhotoImpl = vi.fn(basicPhoto());
+
+    const slideshow = createSlideshow({
+      config: CONFIG,
+      layers: [makeLayer(), makeLayer()],
+      placeholder: makePlaceholder(),
+      fetchImpl,
+      timers,
+      now: () => 0,
+      preloadPhotoImpl,
+      preloadVideoImpl: vi.fn(basicVideo()),
+      playToEndImpl: basicPlayToEnd(),
+    });
+
+    const startPromise = slideshow.start();
+    await new Promise(r => setTimeout(r, 10));
+    slideshow.stop();
+    await startPromise;
+
+    expect(preloadPhotoImpl).not.toHaveBeenCalled();
   });
 
   it('plays videos through playToEnd', async () => {
@@ -345,12 +377,80 @@ describe('createSlideshow', () => {
     expect(after).toEqual(before);
   });
 
-  it('refresh timer no-ops on empty manifest', async () => {
+  it('refresh timer clears state and shows placeholder when album goes empty', async () => {
+    const layers = [makeLayer(), makeLayer()];
+    const placeholder = makePlaceholder();
     const timers = makeTimers();
     const fetchImpl = vi
       .fn()
       .mockResolvedValueOnce(manifestResponse([{ name: 'a.jpg', type: 'file' }]))
       .mockResolvedValue(manifestResponse([]));
+    const gate = makeGate(1);
+    const preloadPhotoImpl = gatedPreload(gate, basicPhoto());
+
+    const slideshow = createSlideshow({
+      config: CONFIG,
+      layers,
+      placeholder,
+      fetchImpl,
+      timers,
+      now: () => 0,
+      preloadPhotoImpl,
+      preloadVideoImpl: vi.fn(basicVideo()),
+      playToEndImpl: basicPlayToEnd(),
+    });
+
+    const startPromise = slideshow.start();
+    await gate.promise;
+    const [intervalId] = [...timers._intervals.keys()];
+    await timers._fireInterval(intervalId);
+    slideshow.stop();
+    await startPromise;
+
+    expect(slideshow._state.assets).toEqual([]);
+    expect(slideshow._state.playlist).toEqual([]);
+    expect(placeholder.show).toHaveBeenCalled();
+    for (const layer of layers) expect(layer.fadeOut).toHaveBeenCalled();
+  });
+
+  it('refresh timer hides placeholder and repopulates state when content arrives in an empty album', async () => {
+    const layers = [makeLayer(), makeLayer()];
+    const placeholder = makePlaceholder();
+    const timers = makeTimers();
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(manifestResponse([]))
+      .mockResolvedValue(manifestResponse([{ name: 'a.jpg', type: 'file' }]));
+
+    const slideshow = createSlideshow({
+      config: CONFIG,
+      layers,
+      placeholder,
+      fetchImpl,
+      timers,
+      now: () => 0,
+      preloadPhotoImpl: vi.fn(basicPhoto()),
+      preloadVideoImpl: vi.fn(basicVideo()),
+      playToEndImpl: basicPlayToEnd(),
+    });
+
+    const startPromise = slideshow.start();
+    await new Promise(r => setTimeout(r, 10));
+    const [intervalId] = [...timers._intervals.keys()];
+    await timers._fireInterval(intervalId);
+    slideshow.stop();
+    await startPromise;
+
+    expect(slideshow._state.assets.map(a => a.name)).toEqual(['a.jpg']);
+    expect(placeholder.hide).toHaveBeenCalled();
+  });
+
+  it('refresh timer keeps state intact when the fetch fails', async () => {
+    const timers = makeTimers();
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(manifestResponse([{ name: 'a.jpg', type: 'file' }]))
+      .mockRejectedValue(new Error('network'));
     const gate = makeGate(1);
     const preloadPhotoImpl = gatedPreload(gate, basicPhoto());
 

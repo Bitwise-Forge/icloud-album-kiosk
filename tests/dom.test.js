@@ -62,6 +62,15 @@ describe('makePlaceholder', () => {
     expect(el.classList.contains('hidden')).toBe(true);
   });
 
+  it('show() removes "hidden" class', () => {
+    document.body.innerHTML = '<div id="placeholder" class="hidden"></div>';
+    const el = document.getElementById('placeholder');
+    const placeholder = makePlaceholder(el);
+    expect(el.classList.contains('hidden')).toBe(true);
+    placeholder.show();
+    expect(el.classList.contains('hidden')).toBe(false);
+  });
+
   it('exposes the element for testing', () => {
     document.body.innerHTML = '<div id="placeholder"></div>';
     const el = document.getElementById('placeholder');

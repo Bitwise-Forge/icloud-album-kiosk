@@ -14,4 +14,5 @@ export const makeLayer = (stage, id, { doc = document } = {}) => {
 export const makePlaceholder = el => ({
   element: el,
   hide: () => el.classList.add('hidden'),
+  show: () => el.classList.remove('hidden'),
 });

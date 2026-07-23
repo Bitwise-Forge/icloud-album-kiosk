@@ -16,7 +16,7 @@ describe('fetchManifest', () => {
     );
     const result = await fetchManifest('/list/', { fetchImpl });
     expect(result.map(e => e.name)).toEqual(['a.jpg', 'c.mp4']);
-    expect(fetchImpl).toHaveBeenCalledWith('/list/');
+    expect(fetchImpl).toHaveBeenCalledWith('/list/', { cache: 'no-store' });
   });
 
   it('throws on non-ok responses', async () => {
@@ -29,6 +29,7 @@ describe('fetchManifest', () => {
     try {
       const result = await fetchManifest('/list/');
       expect(result).toEqual([]);
+      expect(spy).toHaveBeenCalledWith('/list/', { cache: 'no-store' });
     } finally {
       spy.mockRestore();
     }
@@ -40,6 +41,7 @@ describe('fetchConfig', () => {
     const fetchImpl = vi.fn().mockResolvedValue(ok({ photoDwellSeconds: 30 }));
     const result = await fetchConfig('/config.json', { fetchImpl });
     expect(result).toEqual({ photoDwellSeconds: 30 });
+    expect(fetchImpl).toHaveBeenCalledWith('/config.json', { cache: 'no-store' });
   });
 
   it('throws on non-ok responses', async () => {
@@ -52,6 +54,7 @@ describe('fetchConfig', () => {
     try {
       const result = await fetchConfig('/config.json');
       expect(result).toEqual({ a: 1 });
+      expect(spy).toHaveBeenCalledWith('/config.json', { cache: 'no-store' });
     } finally {
       spy.mockRestore();
     }

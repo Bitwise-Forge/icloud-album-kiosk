@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-22
+
+Fix: an emptied source album never propagated to the display — the
+slideshow kept cycling through phantom filenames from a stale manifest.
+
+### Fixed
+
+- Refresh timer now surfaces empty-album state instead of silently
+  discarding it. Previously, `scheduleRefresh` treated every fetch
+  result of length zero — whether the fetch succeeded with an empty
+  album or failed transiently — as "keep the current playlist," so the
+  slideshow kept requesting photos that no longer existed on disk
+  (each one 404-ing) until the container was restarted.
+- Boot path handles empty-album startup cleanly. Previously,
+  `slideshow.start()` looped on `assets.length === 0`, blocking behind
+  the placeholder indefinitely if the album happened to be empty at
+  first fetch. Now only a failed fetch is a reason to keep waiting; a
+  successful empty response is a valid terminal answer and the
+  slideshow proceeds into an idle loop that reacts as soon as content
+  appears.
+- `advance()` gracefully idles on an empty playlist instead of
+  crashing on `state.playlist[state.cursor]` — a code path that was
+  previously unreachable only because of the two bugs above.
+- `manifestClient` passes `cache: 'no-store'` on both `fetchManifest`
+  and `fetchConfig`. Chromium was observed satisfying `/list/` from
+  disk cache in some conditions, extending the stale-manifest window
+  well past the 30-second `max-age` header advertised by nginx.
+
+### Changed
+
+- `makePlaceholder` gains a `show()` method that removes the `hidden`
+  class, mirroring the existing `hide()`. Used by the refresh timer
+  to reveal the placeholder when the album empties out mid-run.
+- Empty-manifest handling now clears both display layers via
+  `fadeOut()` on the transition to empty, so a stale photo doesn't
+  linger visible under the placeholder.
+
 ## [0.1.0] - 2026-07-20
 
 Initial public release. A folder of photos and videos, shown as a
@@ -89,5 +126,6 @@ full-screen slideshow.
 - No transcoding or HEIC/HEVC fallback. Non-whitelisted extensions are
   silently skipped.
 
-[Unreleased]: https://github.com/Bitwise-Forge/icloud-album-kiosk/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Bitwise-Forge/icloud-album-kiosk/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/Bitwise-Forge/icloud-album-kiosk/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Bitwise-Forge/icloud-album-kiosk/releases/tag/v0.1.0

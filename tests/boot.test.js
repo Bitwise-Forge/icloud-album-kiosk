@@ -28,7 +28,7 @@ describe('boot', () => {
 
     const slideshow = await boot({ fetchImpl, createSlideshowImpl: factory });
 
-    expect(fetchImpl).toHaveBeenCalledWith('/config.json');
+    expect(fetchImpl).toHaveBeenCalledWith('/config.json', { cache: 'no-store' });
     expect(factory).toHaveBeenCalledOnce();
 
     const args = factory.mock.calls[0][0];
@@ -78,6 +78,6 @@ describe('boot', () => {
 
     await boot({ fetchImpl, createSlideshowImpl: factory, configUrl: '/alt-config.json' });
 
-    expect(fetchImpl).toHaveBeenCalledWith('/alt-config.json');
+    expect(fetchImpl).toHaveBeenCalledWith('/alt-config.json', { cache: 'no-store' });
   });
 });
